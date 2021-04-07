@@ -1,21 +1,33 @@
 """Launch Tk GUI for a Tarot card reading."""
 
-# file: pytarot.py; author: Joe Lewis-Bowen; updated: 2020-11-29.
-#
-# 2020-12-01: Refine layout, start help popup, progress .csv save.
-# 2020-11-30: Load card keywords from file to deck, shuffle, text to canvas.
-# 2020-11-29: Add spread choice drop-down, stub save to .csv on exit.
-# 2020-11-28: First step getting GUI layout working, stubs for functions,
-#   using tips from: realpython.com/python-gui-tkinter/ etc.
-#
-# usage: pythonw pytarot.py; or: r-click 'Open with' pythonw.exe
-#
+# File: pytarot.py. Author: Joe Lewis-Bowen. Updated: 2021-04-07.
+
+# Usage: pythonw pytarot.py; or: r-click 'Open with' pythonw.exe
+
 # NB: needs to be run in the same folder as pytarot_cards.csv.
 
-# All rights reserved. This code may not be used, distributed or modified
-# without the author's permission. The author disclaims: any warranties on
-# this software; any obligations to its support. In no event will the author
-# be liable for any consequences of use of this software.
+# History: 2020-11-28: First step getting GUI layout working, 
+#   stubs for functions, tips: realpython.com/python-gui-tkinter/ etc.
+# 2020-11-29: Add spread choice drop-down, stub save to .csv on exit.
+# 2020-11-30: Load card keywords from file to deck, shuffle, text to canvas.
+# 2020-12-01: Refine layout, start help popup, progress .csv save.
+# 2020-12-16: Debug: layout (Canvas size, padding), reading notes.
+# 2021-04-07: Update license comment for GPL on GitHub; simple help popup.
+
+# Copyright: 2020, 2021 Joe Lewis-Bowen <https://github.com/Loosebone/>.
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
 # IMPORTS
@@ -43,9 +55,26 @@ from tkinter import filedialog, simpledialog, font as tkfont
 
 # CONFIGURATION
 
-# Tags to indicate help text line format - dumb approach (vs font arguments)?
-TXT_HELP = [('bold', 'Please enjoy PyTarot.'),
-    ('plain', "This digital computer program simulates the esoteric practice of reading the Tarot. A deck of 78 playing cards, which includes 4 suits of 14 cards and 22 trump or major arcana cards, is described in a file on your computer. This deck is shuffled according to the date and time of the reading, as well as a short sentence for your query. The cards are then dealt using the chosen spread for your reading. You may save the reading to a file when you quit the program.")]
+# Tags to indicate help text line format - no formatting yet.
+TXT_HELP = """Please enjoy PyTarot, inspired by druidry.org.
+
+This digital computer program simulates the esoteric practice of reading the
+Tarot. A deck of 78 playing cards (which includes 4 suits of 14 cards and 22
+trump or major arcana cards) is described in a file on your computer. This
+deck is shuffled according to the date and time of the reading, as well as a
+short sentence for your query. The cards are then dealt using the chosen
+spread for your reading. Notes indicate the significance of each card, by its
+position in the spread and by keywords for its associated meanings. You may
+click on the cards to add additional notes, then save the reading to a file
+when you quit the program.
+
+Tarot readings can give insight into events in your life and your attitudes
+about them. Whilst readings may tell stories that indicate possible future
+paths, they do not predict what will happen and do not rely on supernatural
+forces. However, the practice of divination for inspiration is compatible with
+a nature-based spirituality such as Druidry, as taught by the Order of Bards,
+Ovates and Druids (OBOD) at https://druidry.org. Have fun, and remember to be
+kind to yourself and others!"""
 
 # Spread lists card positions on notional grid; also define key phrases.
 # TODO: add: my 5 card orientation spread, 6 card triangle, 12 card square?
@@ -316,15 +345,21 @@ class WinTr(tk.Frame):
         lbl_pad_right = tk.Label(self.pop_note, text='', width=2)
         lbl_pad_right.grid(row=1, rowspan=3, column=2)
         # TODO: fix this layout - it's still not good; 
-        # TODO: on close, write text on canvas; also save notes to CSV.
+        # NB: on close, write text on canvas; also save notes to CSV.
     
     
     def popup_help(self):
         """Show dialogue window with simple help text."""
-        print('WinTr.popup_help() stub called.')
-
-        # Want formatted text in scrollable box with 'dismiss' button.
-        
+        # Want formatted text (in scrollable box) with dismiss button.
+        pop_hlp = tk.Toplevel()
+        pop_hlp.wm_title('Tarot Help')
+        tx_hlp = tk.Text(pop_hlp, height=20, width=80)
+        # , bg='#FFFFFF', padx=CELL_PAD, pady=CELL_PAD, wrap=tk.WORD
+        tx_hlp.grid(row=1, column=1, padx=CELL_PAD, pady=CELL_PAD)
+        tx_hlp.insert(tk.END, TXT_HELP)
+        btn_close = tk.Button(pop_hlp, command=pop_hlp.destroy, 
+            text='OK', width=BTN_WIDTH)
+        btn_close.grid(column=1, row=2, padx=CELL_PAD, pady=CELL_PAD)
 
 
     def popup_note_close(self):
